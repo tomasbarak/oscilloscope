@@ -1,5 +1,4 @@
 console.clear();
-
 PIXI.settings.RESOLUTION = window.devicePixelRatio || 1;
 
 const sharpness = 1;
@@ -66,7 +65,7 @@ const emitter = new PIXI.particles.Emitter(container, [texture], {
     blendMode: "multiply",
     frequency: 0.00005,
     emitterLifetime: -1,
-    maxParticles: 9000,
+    maxParticles: 5000,
     pos: {
         x: 0,
         y: 0
@@ -91,23 +90,47 @@ window.addEventListener("resize", () => {
 let xFnc = 0;
 let isReturning = false;
 
-setInterval(() => {
-    const xCenter = app.screen.width / 2;
-    const yCenter = app.screen.height / 2;
-    document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;  
-    moveEmitterTo(emitter, xFnc, calcCuadratic(xFnc));
-    if(xFnc > app.screen.width){
-        xFnc = 0;
-    }else{
-        xFnc += 10;
-    }
-}, 0);
+function drawCuadratic(){
+    setInterval(() => {
+        const xCenter = app.screen.width / 2;
+        const yCenter = app.screen.height / 2;
+        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;  
+        moveEmitterTo(emitter, xFnc, calcCuadratic(xFnc));
+        if(xFnc > app.screen.width){
+            xFnc = 0;
+        }else{
+            xFnc += 1;
+        }
+    }, 10);
+}
+let mLine = 0;
+function drawLine(){
+    setInterval(() => {
+        const xCenter = app.screen.width / 2;
+        const yCenter = app.screen.height / 2;
+        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;  
+        moveEmitterTo(emitter, xFnc, calcLine(xFnc, mLine));
+        if(xFnc > app.screen.width){
+            xFnc = 0;
+        }else{
+            xFnc += 100;
+        }
+        mLine+=0.001;
+    }, 1);
+}
+
+drawCuadratic();
 
 function calcCuadratic(x){
-    const a = 0.00073;
-    const k = (app.screen.height) / 2 ;
+    const a = 0.05;
+    const k = (app.screen.height/2)-375
     const h = app.screen.width/2;
     return a*(x-h)**2 + k;
+}
+
+function calcLine(x, m){
+	const b =0
+    return m*x+b;
 }
 
 function moveEmitterTo(emitter, x, y) {
@@ -142,8 +165,6 @@ function moveEmitterTo(emitter, x, y) {
     emitter.updateOwnerPos(emitterPos.x, emitterPos.y);
   }
 }*/
-
-
 
 
 function createTexture(r1, r2, resolution) {
