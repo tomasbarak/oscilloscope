@@ -60,18 +60,18 @@ const emitter = new PIXI.particles.Emitter(container, [texture], {
         max: 0
     },
     lifetime: {
-        min: 1,
-        max: 1
+        min: 2,
+        max: 2
     },
     blendMode: "multiply",
-    frequency: 0.00005,
+    frequency: 0.0005,
     emitterLifetime: -1,
     maxParticles: 100000,
     pos: {
         x: 0,
         y: 0
     },
-    addAtBack: false,
+    addAtBack: true,
     spawnType: "point"
 });
 
@@ -80,7 +80,7 @@ let resized = false;
 emitter.updateOwnerPos(emitterPos.x, emitterPos.y);
 
 app.stage.addChild(container);
-app.stage.interactive = true;
+app.stage.interactive = false;
 //app.ticker.add(onTick);
 app.stage.on("pointermove", event => pointer.copy(event.data.global));
 
