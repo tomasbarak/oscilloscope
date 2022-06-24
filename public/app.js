@@ -31,8 +31,8 @@ const emitter = new PIXI.particles.Emitter(container, [texture], {
         end: 0
     },
     scale: {
-        start: 0.2,
-        end: 0.1,
+        start: 0.4,
+        end: 0.2,
         minimumScaleMultiplier: 1
     },
     color: {
@@ -59,13 +59,13 @@ const emitter = new PIXI.particles.Emitter(container, [texture], {
         max: 0
     },
     lifetime: {
-        min: 0.25,
-        max: 0.25
+        min: 1,
+        max: 1
     },
     blendMode: "multiply",
     frequency: 0.00005,
     emitterLifetime: -1,
-    maxParticles: 5000,
+    maxParticles: 100000,
     pos: {
         x: 0,
         y: 0
@@ -90,47 +90,45 @@ window.addEventListener("resize", () => {
 let xFnc = 0;
 let isReturning = false;
 
-function drawCuadratic(){
+function drawCuadratic() {
     setInterval(() => {
         const xCenter = app.screen.width / 2;
         const yCenter = app.screen.height / 2;
-        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;  
+        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;
         moveEmitterTo(emitter, xFnc, calcCuadratic(xFnc));
-        if(xFnc > app.screen.width){
+        if (xFnc > app.screen.width) {
             xFnc = 0;
-        }else{
+        } else {
             xFnc += 1;
         }
-    }, 10);
+    }, 100);
 }
 let mLine = 0;
-function drawLine(){
+function drawLine() {
     setInterval(() => {
         const xCenter = app.screen.width / 2;
         const yCenter = app.screen.height / 2;
-        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;  
+        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;
         moveEmitterTo(emitter, xFnc, calcLine(xFnc, mLine));
-        if(xFnc > app.screen.width){
+        if (xFnc > app.screen.width) {
             xFnc = 0;
-        }else{
+        } else {
             xFnc += 100;
         }
-        mLine+=0.001;
+        mLine += 0.001;
     }, 1);
 }
 
-drawCuadratic();
-
-function calcCuadratic(x){
+function calcCuadratic(x) {
     const a = 0.05;
-    const k = (app.screen.height/2)-375
-    const h = app.screen.width/2;
-    return a*(x-h)**2 + k;
+    const k = (app.screen.height / 2) - 375
+    const h = app.screen.width / 2;
+    return a * (x - h) ** 2 + k;
 }
 
-function calcLine(x, m){
-	const b =0
-    return m*x+b;
+function calcLine(x, m) {
+    const b = 0
+    return m * x + b;
 }
 
 function moveEmitterTo(emitter, x, y) {
@@ -189,3 +187,37 @@ function createTexture(r1, r2, resolution) {
 
 console.log("PIXI", PIXI);
 console.log("APP", app);
+
+function waveformDraw() {
+    const data = window.electronAPI.openFile().then(data => {
+        const waveArr = data.data;
+        let iY = 0;
+        let x = 0 - app.screen.width;
+        let isReturning = false
+        setInterval(() => {
+            const xCenter = app.screen.width / 2;
+            const yCenter = app.screen.height / 2;
+            
+            moveEmitterTo(emitter, xCenter + x, yCenter + waveArr[iY]);
+            iY++;
+            
+            if(!isReturning){
+                x+=10;
+            }else{
+                x -= 10;
+            }
+
+            if(x >= 100){
+                isReturning = true;
+            }else if(x <= -100){
+                isReturning = false;
+            }
+            console.log(xCenter, yCenter + waveArr[iY]);
+            document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;
+
+        }, );
+    });
+    
+}
+
+waveformDraw();
