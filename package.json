@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "browser-hrtime": "^1.1.8",
     "electron": "^19.0.6",
     "mic-to-speech": "^1.0.1",
     "waveform-data": "^4.3.0"
