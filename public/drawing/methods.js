@@ -1,4 +1,7 @@
-//Export a function to use in html
+function moveEmitterTo(emitter, x, y) {
+    emitter.updateOwnerPos(x, y);
+}
+
 function drawLine(emitter, app, line = { m: 1, b: 0 }) {
     let xFnc = 0;
     setInterval(() => {
@@ -16,39 +19,26 @@ function calcLine(x, m = 1, b = 0) {
     return m * x + b;
 }
 
-function waveformDraw(emitter, app) {
+function waveformDraw(emitter, app, name) {
     let isReturning = false;
-    window.electronAPI.openFile().then(data => {
+    window.electronAPI.openFile(name).then(data => {
         const waveArr = data.data;
+        let index = 0;
+        let isChannel0 = true;
+
+        let iX = 0;
         let iY = 0;
-        let x = 0;
-        let isReturning = false
+
         setInterval(() => {
-            const xCenter = app.screen.width / 2;
-            const yCenter = app.screen.height / 2;
 
-            moveEmitterTo(emitter, xCenter + x, yCenter + waveArr[iY]);
-            iY++;
+            iX = app.screen.width/2 + waveArr[index];
+            iY = app.screen.height/2 + waveArr[index + 1];
 
-            if(iY >= waveArr.length){
-                iY = 0;
-            }
-
-            if (!isReturning) {
-                x += 1;
-            } else {
-                x -= 1;
-            }
-
-            if (x >= app.screen.width - app.screen.width / 2) {
-                isReturning = true;
-            } else if (x <= -app.screen.width + app.screen.width / 2) {
-                isReturning = false;
-            }
-            console.log(xCenter, yCenter + waveArr[iY]);
-            document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;
-
-        }, 0.1);
+            moveEmitterTo(emitter, iX, iY);
+            console.log(`${iX}, ${iY}`);
+            index+=2;
+            if(index >= 2) isChannel0 = !isChannel0;
+        }, 1);
     });
 
 }
@@ -73,11 +63,7 @@ function calcCuadratic(x) {
     return a * (x - h) ** 2 + k;
 }
 
-function moveEmitterTo(emitter, x, y) {
-    emitter.updateOwnerPos(x, y);
-}
-
-function drawCircle(emitter, app){
+function drawCircle(emitter, app) {
     let xFnc = 0;
     setInterval(() => {
         document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;
@@ -90,9 +76,36 @@ function drawCircle(emitter, app){
     }, 100);
 }
 
-function calcCircle(x, app){
+function calcCircle(x, app) {
     const a = 0.05;
     const k = 0;
     const h = 0;
     return a * (x - h) ** 2 + k;
+}
+
+function drawLorenz(emitter, app) {
+    let x = 1;
+    let y = 1;
+    let z = 1;
+
+    let offset_x = 0;
+    let offset_y = -app.screen.height / 2;
+    let offset_z = -app.screen.height / 2;
+
+    let sigma = 10;
+    let rho = 28;
+    let beta = 8 / 3;
+    let stepSize = 0.01;
+    let scale = 10;
+    setInterval(() => {
+        x += lorenz.dx_dt(x, y, sigma) * stepSize;
+        y += lorenz.dy_dt(x, y, z, rho) * stepSize;
+        z += lorenz.dz_dt(x, y, z, beta) * stepSize;
+
+        const nx = app.screen.width / 2 + x * scale + offset_x;
+        const ny = app.screen.height / 2 + y * scale + offset_y;
+        const nz = app.screen.height / 2 + z * scale + offset_z;
+        moveEmitterTo(emitter, nx, nz);
+        document.getElementById("info").innerHTML = `Particles: ${emitter.particleCount}`;
+    }, 0)
 }

@@ -15,8 +15,9 @@ const createWindow = () => {
           }
     })
 
-    function readFile(){
-        const file = fs.readFileSync(`${publicDir}/sunrays.json`);
+    function readFile(event, filename){
+        console.log(filename)
+        const file = fs.readFileSync(`${publicDir}/sounds/${filename}.json`);
         const data = JSON.parse(file);
         return data;
     }

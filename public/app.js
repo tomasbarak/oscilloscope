@@ -29,16 +29,16 @@ const emitter = new PIXI.particles.Emitter(container, [texture], {
     autoUpdate: true,
     alpha: {
         start: 1,
-        end: 0
+        end: 0.5
     },
     scale: {
-        start: 0.4,
-        end: 0.2,
+        start: 0.2,
+        end: 0.1,
         minimumScaleMultiplier: 1
     },
     color: {
-        start: "#afffaf",
-        end: "#008000"
+        start: "#fc0303",
+        end: "#2003fc"
     },
     speed: {
         start: 0,
@@ -60,11 +60,11 @@ const emitter = new PIXI.particles.Emitter(container, [texture], {
         max: 0
     },
     lifetime: {
-        min: 2,
-        max: 2
+        min: 40,
+        max: 40
     },
     blendMode: "multiply",
-    frequency: 0.0005,
+    frequency: 0.005,
     emitterLifetime: -1,
     maxParticles: 100000,
     pos: {
@@ -112,4 +112,5 @@ function createTexture(r1, r2, resolution) {
     return PIXI.Texture.fromCanvas(canvas);
 }
 
-waveformDraw(emitter, app);
+drawLorenz(emitter, app);
+
